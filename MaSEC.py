@@ -139,10 +139,6 @@ def KConsumer(consumer_num, CFG_TOPIC_PARTITIONS):
 						# Fill NaN values with median for each object
 						object_pool.loc[:, CFG_CONSUMER_SPEED_NAME] = object_pool[CFG_CONSUMER_SPEED_NAME].fillna(object_pool.groupby(CFG_PRODUCER_KEY)[CFG_CONSUMER_SPEED_NAME].transform('median'))
 						
-						# Fill all other NaN values with 0 (we assume that these objects were stationary - with minor fluctuations around 0)
-						object_pool[CFG_CONSUMER_SPEED_NAME].fillna(value=0, inplace=True)
-
-
 						# Create the Timeslice
 						# Interpolate Points
 						timeslice = object_pool.groupby(CFG_PRODUCER_KEY, group_keys=False).apply(lambda l: get_aligned_location(l, pending_time, temporal_name=CFG_PRODUCER_TIMESTAMP_NAME, temporal_unit=CFG_PRODUCER_TIMESTAMP_UNIT, mode=CFG_ALIGNMENT_MODE))

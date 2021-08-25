@@ -79,9 +79,7 @@ def fetch_latest_positions():
 	except Exception:
 		# if it fails (for some reason) return an empty DataFrame
 		result = pd.DataFrame(data=[], columns=CFG_BUFFER_COLUMN_NAMES)
-	
-	# Just a Simulation for Demonstration/Testing --- REMOVE BEFORE DEPLOYING
-	result.loc[:, CFG_PRODUCER_TIMESTAMP_NAME] = int(datetime.now(timezone.utc).strftime("%s")) * 10**3
+		
 	return result
 
 
