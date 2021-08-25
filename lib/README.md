@@ -1,59 +1,84 @@
-# EvolvingClusters: Online Discovery of Group Patterns in Mobility Data
+# Auxiliary Code
 
-Integrating the EvolvingClusters algorithm into the Apache Kafka platform.
+  * ```OPTICS_config.py```
+    
+    Contains parameters related to the OPTICS algorithm for (offline) Anchorage Discovery (AD).
 
+    * ```CFG_THRESHOLD_LON_{MIN,MAX}```: Longtude range (for spatial outlier removal; default {-1000000000, 1000000000})
+    * ```CFG_THRESHOLD_LAT_{MIN,MAX}```: Latitude range (for spatial outlier removal; default {-1000000000, 1000000000})
 
+    * ```CSV_FILE_FOR_READ```: Path for the input CSV file.
 
-## Installation
+    * ```COLUMN_NAMES```: Feature list of input file.
 
-Install the dependencies included with the following command
-``` Python
-pip install -r requirements.txt
-```
+    * ```CFG_MIN_SAMPLES```: The number of samples in a neighborhood for a point to be considered as a core point, required by OPTICS (default value: 3 objects). 
+   
+    * ```CFG_MAX_EPS```: The maximum distance between two samples for one to be considered as in the neighborhood of the other, required by OPTICS (default value: 1500 meters).
 
+    * ```CFG_THRESHOLD_SPEED_{MIN, MAX}```: Speed range for a stationary object (default: {0, 1}).
 
+    * ```CFG_INIT_POINTS```: Minimum required number of data points for Anchorage Discovery.
 
-## File Description
+    * ```CSV_FILE_FOR_READ_anchs```: Path for the ports' locations CSV file (for AD cluster filtering)
 
-  * ```kafka_config_c_p_v01.py```: Secondary script; Configuration parameters for the Main script.
-  * ```kafka_update_buffer_v03.py```: Methods for creating (and maintaining) the objects' buffer, and discovering evolving clusters.
-  * ```helper.py```: Auxiliary methods for temporal alignment, buffer adjustment, and data output
+  * ```helper.py```
 
+    Contains code for helper functions (e.g. temporal aligment, data output, etc.)
 
+  * ```kafka_config_c_p_v01.py```
 
-## Usage
+    Contains parameters related to the MaSEC framework.
 
-Prior to Evolving Clusters discovery, the user must set the parameters of the dataset (e.g. features, primary key, output directory etc.), as well as the algorithm's (e.g. step, cardinality threshold, etc.) to the ```kafka_config_c_p_v01.py``` file. 
+    * ```CFG_KAFKA_FOLDER```: Path for the Kafka/Zookeeper binaries' location (default: kafka_2.13-2.8.0")
+    
+    * ```CFG_HOST_ADDRESS```: The IP address of the Host node.
 
-After setting the appropriate parameters, execute the ```EvolvingClustersKafka.py``` script, as the following example suggests:
+    * ```CFG_HOST_PORT```: The Port of the Host node.
+  
+    * ```CFG_DB_NAME```: Database schema name
 
-```Python
-  python EvolvingClustersKafka.py
-```
+    * ```CFG_DB_USERNAME```: Database username
+    
+    * ```CFG_DB_PASSWORD```: Database password
+    
+    * ```CFG_DB_QUERY```: SQL query for accessing the streaming data 
+    
+    * ```CFG_PRODUCER_DTYPE```: Dataset special dtypes
+   
+    * ```CFG_PRODUCER_KEY```: The column name referring to the locations' object identifier (default: "mmsi")
 
+    * ```CFG_PRODUCER_TIMESTAMP_NAME```: The column name referring to the locations' timestamp (default: "ts")
+    
+    * ```CFG_CONSUMER_SPEED_NAME```: The column name referring to the locations' recorded speed (default: "speed")
 
-## Data Output
+    * ```CFG_CONSUMER_COORDINATE_NAMES```: The column names referring to the locations' (ordered - by imporance) coordinates (default: ["lon", "lat"])
 
-The output of the algorithm is either at a CSV file, or a Kafka Topic, depending on the values of ```CFG_SAVE_TO_FILE```, and ```CFG_SAVE_TO_TOPIC``` parameters of ```kafka_config_c_p_v01.py```.
+    * ```CFG_PRODUCER_TIMESTAMP_UNIT```: The unit of the temporal information (default: "ms")
+    
+    * ```CFG_BUFFER_COLUMN_NAMES```: Dataset columns to be maintained on the buffer.
+    
+    * ```CFG_DESIRED_ALIGNMENT_RATE_SEC```: Data-Point Alignment Interval (seconds)
 
-The output of the CSV files follow the below template:
+    * ```CFG_THRESHOLD_MAX_SPEED```: Maximum Speed Threshold (Vessels -- m/s; default: 25.7222222)
+    
+    * ```CFG_EC_CARDINALITY_THRESHOLD```: Minimum object cardinality for an Evolving Cluster (default: 3 objects)
+    
+    * ```CFG_EC_TEMPORAL_THRESHOLD```: Minimum allowed duration for an Evolving Cluster (default: 2 minutes)
+    
+    * ```CFG_EC_DISTANCE_THRESHOLD```: Maximum allowed distance for an Evolving Cluster (default: 1500 meters)
 
-  * Aligned timeslices:
-      > <pre>kafka_aligned_data_{CFG_ALIGNMENT_MODE}_dataset_{CFG_DATASET_NAME}.csv</pre>
+    * ```CFG_SAVE_TO_FILE```: Output data to CSV file (default: True)
+    
+    * ```CFG_SAVE_TO_TOPIC```: Output data to Kafka Topic (default: False)
+    
 
-  * Evolving clusters:
-      ><pre>kafka_{CFG_ALIGNMENT_MODE}_evolving_clusters_{"mcs", "mc"}_params_c={CFG_EC_CARDINALITY_THRESHOLD}_t={CFG_EC_TEMPORAL_THRESHOLD}_theta={CFG_EC_DISTANCE_THRESHOLD}_dataset_{CFG_DATASET_NAME}.csv</pre>
+  * ```kafka_fun_aux.py```
+    Functions related to Kafka/Zookeeper instantiation and Kafka Producer.
 
-The names of the Kafka Topics follow the below template:
-  * Aligned timeslices:
-    > <pre>ecdresults{CFG_TOPIC_SUFFIX}</pre>
+  * ```kafka_update_buffer_v03.py```
+    Methods related to Objects' Buffer maintenance and Evolving Clusters discovery.
 
-  * Evolving clusters:
-    > <pre>alignedata{CFG_TOPIC_SUFFIX}</pre>
-
-**CFG_ALIGNMENT_MODE**, **CFG_DATASET_NAME**, **CFG_EC_CARDINALITY_THRESHOLD**, **CFG_EC_TEMPORAL_THRESHOLD**, **CFG_EC_DISTANCE_THRESHOLD** and **CFG_TOPIC_SUFFIX** parameters can be set at the ```kafka_config_c_p_v01.py``` file. 
-
-
+---
 
 ## Contributors
-Andreas Tritsarolis, Yannis Theodoridis; Data Science Lab., University of Piraeus
+Andreas Tritsarolis, Yannis Kontoulis, Nikos Pelekis, Yannis Theodoridis; Data Science Lab., University of Piraeus
